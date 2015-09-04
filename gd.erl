@@ -23,7 +23,7 @@
 -import(lists, [map/2, mapfoldl/3, foreach/2, filter/2, max/1, min/1,
 		foldl/3]).
 
--import(ordsets, [new_set/0, list_to_set/1, 
+-import(ordsets, [new/0, from_list/1, 
 		  is_element/2, add_element/2, del_element/2,
 		  intersection/2, subtract/2]).
 
@@ -69,6 +69,15 @@ event(Event, To) -> To ! {event,Event,self()}.
 
 -define(empty_moving, {[],[]}).
 
+-record(trace, {
+	  print_g = false,
+	  print_unknown_events = false,
+	  print_most_events = false,
+	  print_events = false,
+	  print_call_user = false,
+	  print_digraph_repr = false
+	 }).
+
 %%% Graphical state
 -record(g,
 	{users_latest_graph = #gd_graph{},	% Practical at crashes
@@ -87,8 +96,8 @@ event(Event, To) -> To ! {event,Event,self()}.
 
 	 %% Selection
 	 rearrange = false,			% Allow user layout change
-	 selected_nodes = new_set(),	% Objs which are selected
-	 selected_arcs = new_set(),	% Arc Objs which are selected
+	 selected_nodes = new(),	% Objs which are selected
+	 selected_arcs = new(),	% Arc Objs which are selected
 
 	 trace = #trace{},
 	 callback,
@@ -127,7 +136,7 @@ event(Event, To) -> To ! {event,Event,self()}.
 	G#g{options = (G#g.options)#gd_options{Id = Value}}).
 
 -define(set_user_opt_dyn(G,Id,Value),
-	G#g{options = setelement(?opt2N(gd_options,Id),G#g.options,Value)}.
+	G#g{options = setelement(?opt2N(gd_options,Id),G#g.options,Value)}).
 
 -define(user_opt_dyn(G,Id), element(?opt2N(gd_options,Id),G#g.options)).
 
@@ -162,20 +171,12 @@ event(Event, To) -> To ! {event,Event,self()}.
 %%%
 %%%	Trace functions, macros and records
 %%%
--record(trace, {
-	  print_g = false,
-	  print_unknown_events = false,
-	  print_most_events = false,
-	  print_events = false,
-	  print_call_user = false,
-	  print_digraph_repr = false
-	 }).
 
 -define(print_trace(Format,Vals),
 	io:format('~w ~w: ~s\n', [?MODULE,?LINE,io_lib:format(Format,Vals)])).
 
 -define(set_trace_option(G,Id,Value),
-	G#g{trace = setelement(?opt2N(trace,Id),G#g.trace,Value)}.
+	G#g{trace = setelement(?opt2N(trace,Id),G#g.trace,Value)}).
 
 -define(trace_option(Id,G), (G#g.trace)#trace.Id).
 -define(if_trace(Id,G,Expr), if  ?trace_option(Id,G)==true -> Expr;
@@ -313,7 +314,7 @@ set_option(Opt,Value,G) ->
 select(none, G) -> 
     click(G#g.selected_nodes, G);
 select(all, G) -> %% select the ones that are not already selected
-    NewObjs = subtract(list_to_set(get_all_type(node)),
+    NewObjs = subtract(from_list(get_all_type(node)),
 			       G#g.selected_nodes),
     click(NewObjs, G).
 
@@ -366,7 +367,7 @@ drag_selection_area(Pos0, O) ->
 			      Other -> 
 				  S
 			  end
-		  end, new_set(), HitObjs);
+		  end, new(), HitObjs);
 
 	{gs,_,_,_,_} ->
 	    drag_selection_area(Pos0, O)
@@ -442,7 +443,7 @@ test_to_move_arc(O, SelectedNodeObjs, {WholeAcc,PartsAcc}, G) ->
     A = gs:read(O,data),
     From = A#arc.from_obj,
     To = A#arc.to_obj,
-    ArcPoints = list_to_set([From,To|A#arc.objs]),
+    ArcPoints = from_list([From,To|A#arc.objs]),
     case intersection(ArcPoints,SelectedNodeObjs) of
 	[] -> %% Don't move anything on this line 
 	    {WholeAcc,PartsAcc};
@@ -771,10 +772,10 @@ graph_diff(Old, New) ->
 	   }.
 
 graph_union(Old, GU) ->
-    #gd_graph{edges = list_to_set(Old#gd_graph.edges ++ 
+    #gd_graph{edges = from_list(Old#gd_graph.edges ++ 
 				  GU#gd_graph_update.new_edges --
 				  GU#gd_graph_update.deleted_edges),
-	      vertices = list_to_set(Old#gd_graph.vertices ++ 
+	      vertices = from_list(Old#gd_graph.vertices ++ 
 				     GU#gd_graph_update.new_vertices --
 				     GU#gd_graph_update.deleted_vertices),
 	      start_vertices = Old#gd_graph.start_vertices -- 

@@ -6,7 +6,7 @@
 -import(lists, [map/2, foreach/2, max/1, min/1,	foldl/3, foldr/3,
 		filter/2]).
 
--import(ordsets, [list_to_set/1, is_element/2, add_element/2,
+-import(ordsets, [from_list/1, is_element/2, add_element/2,
 		  subtract/2]).
 
 -import(gd_lib, [zip/2, unzip/1,
@@ -61,7 +61,7 @@ children_to_placed(Vs, Graph) ->
 
 placed_neighbours(Name, Graph) ->
     Neighbs = 
-	list_to_set(digraph:in_neighbours(Graph,Name) ++
+	from_list(digraph:in_neighbours(Graph,Name) ++
 		    digraph:out_neighbours(Graph,Name)),
     filter(fun(V) ->
 		   case digraph:vertex(Graph,V) of
@@ -142,12 +142,12 @@ try_each([],_,_,_) ->
 try_one({Xs0,Ys0}, {W,H}, {Xm,Ym}, Opt) when Opt#gd_options.horizontal==true ->
     try_poss(foldl(fun(X,Acc) ->
 			   possible_poss({X,Ym},20,1,{0,H div 2}) ++ Acc
-		   end, [], list_to_set(Xs0)),
+		   end, [], from_list(Xs0)),
 	     {W,H});
 try_one({Xs0,Ys0}, {W,H}, {Xm,Ym}, Opt) when Opt#gd_options.horizontal==false->
     try_poss(foldl(fun(Y,Acc) ->
 			   possible_poss({Xm,Y},40,1,{W div 4,0}) ++ Acc
-		   end, [], list_to_set(Ys0)),
+		   end, [], from_list(Ys0)),
 	     {W,H}).
     
 poss_of(L, Graph) -> 

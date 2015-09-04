@@ -5,7 +5,7 @@
 
 -import(lists, [map/2, foreach/2, max/1, min/1,	foldl/3, foldr/3]).
 
--import(ordsets, [list_to_set/1, is_element/2, add_element/2, del_element/2,
+-import(ordsets, [from_list/1, is_element/2, add_element/2, del_element/2,
 		  subtract/2, union/2, intersection/2]).
 
 -import(gd_lib, [zip/2, unzip/1, addD/2]).
@@ -56,7 +56,7 @@ design(Roots, Graph, Opt) ->
 
 %%%----------------
 assign_levels(Roots, Graph, Opt) -> 
-    assign_levels(list_to_set(Roots), Graph, Opt, 0).
+    assign_levels(from_list(Roots), Graph, Opt, 0).
 
 
 assign_levels([], _, _, N) ->
@@ -65,7 +65,7 @@ assign_levels([], _, _, N) ->
 assign_levels(Roots, Graph, Opt, N) when Opt#gd_options.directed==true ->
     ThisLevel = foldl(
 		  fun(V,Lev) ->
-			  INs = list_to_set(digraph:in_neighbours(Graph,V)),
+			  INs = from_list(digraph:in_neighbours(Graph,V)),
 			  case intersection(INs,Lev) of
 			      [] -> Lev;
 			      _ -> del_element(V,Lev)
@@ -78,7 +78,7 @@ assign_levels(Roots, Graph, Opt, N) when Opt#gd_options.directed==true ->
 	    end, ThisLevel),
     Children = foldl(
 		 fun(V,Acc) ->
-			 ONs = list_to_set(digraph:out_neighbours(Graph,V)),
+			 ONs = from_list(digraph:out_neighbours(Graph,V)),
 			 union(ONs,Acc)
 		 end, [], ThisLevel),
     assign_levels(union(Children, subtract(Roots,ThisLevel)),

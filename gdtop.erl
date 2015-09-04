@@ -34,6 +34,14 @@ new_graph(Pid, Graph) when record(Graph, gd_graph) ->
 
 -define(empty_moving, {[],[]}).
 
+-record(trace, {
+	  print_g = false,
+	  print_unknown_events = false,
+	  print_events = false,
+	  print_callbacks = false,
+	  print_call_user = false
+	 }).
+
 %%% Graphical state
 -record(g, 
 	{pid_gd,
@@ -49,8 +57,8 @@ new_graph(Pid, Graph) when record(Graph, gd_graph) ->
 	 sum_move={0,0},			% total movment
 
 	 %% Selection
-	 selected_nodes = ordsets:new_set(),	% Objs which are selected
-	 selected_arcs = ordsets:new_set(),	% Arc Objs which are selected
+	 selected_nodes = ordsets:new(),	% Objs which are selected
+	 selected_arcs = ordsets:new(),	% Arc Objs which are selected
 	 sel_area				% Used when selecting many
 	}).
 
@@ -63,19 +71,11 @@ new_graph(Pid, Graph) when record(Graph, gd_graph) ->
 %%%	Trace functions, macros and records
 %%%
 
--record(trace, {
-	  print_g = false,
-	  print_unknown_events = false,
-	  print_events = false,
-	  print_callbacks = false,
-	  print_call_user = false
-	 }).
-
 -define(print_trace(Format,Vals),
 	io:format('~w ~w: ~s\n', [?MODULE,?LINE,io_lib:format(Format,Vals)])).
 
 -define(set_trace_option(G,Id,Value),
-	G#g{trace = setelement(?opt2N(trace,Id),G#g.trace,Value)}.
+	G#g{trace = setelement(?opt2N(trace,Id),G#g.trace,Value)}).
 	
 -define(trace_option(Id,G), (G#g.trace)#trace.Id).
 -define(if_trace(Id,G,Expr), if  ?trace_option(Id,G)==true -> Expr;

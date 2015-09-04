@@ -5,7 +5,7 @@
 
 -import(lists, [map/2, foreach/2, max/1, min/1,	foldl/3, foldr/3]).
 
--import(ordsets, [list_to_set/1, is_element/2, add_element/2,
+-import(ordsets, [from_list/1, is_element/2, add_element/2,
 		  subtract/2]).
 
 -import(gd_lib, [zip/2, unzip/1]).
@@ -46,7 +46,7 @@ design_new_tree(Roots, Graph, Opt) ->
     Vertices = digraph:vertices(Graph),
     Params = {Opt#gd_options.node_separation, Opt#gd_options.center_parents},
     Design =
-	case mk_tree(Roots,Graph,Opt,list_to_set(Vertices)) of
+	case mk_tree(Roots,Graph,Opt,from_list(Vertices)) of
 	    [Tree] -> abs_design(Tree, Params);
 	    Trees -> abs_design({?pseudo_root,0,lists:reverse(Trees)}, Params)
 	end,

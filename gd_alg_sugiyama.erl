@@ -6,7 +6,7 @@
 -import(lists, [map/2, foreach/2, max/1, min/1,	foldl/3, foldr/3,
 		mapfoldl/3]).
 
--import(ordsets, [list_to_set/1, is_element/2, add_element/2, del_element/2,
+-import(ordsets, [from_list/1, is_element/2, add_element/2, del_element/2,
 		  subtract/2, union/2, union/1, intersection/2]).
 
 -import(gd_lib, [zip/2, unzip/1, addD/2]).
@@ -86,7 +86,7 @@ assign_poss([], _, _, _, _, _) ->
 	      
 %%%----------------
 assign_levels(Roots, Graph, Opt) -> 
-    assign_levels(list_to_set(Roots), Graph, Opt, 0, []).
+    assign_levels(from_list(Roots), Graph, Opt, 0, []).
 
 
 assign_levels([], Graph, Opt, Nlastlevel, Placed) 
@@ -131,7 +131,7 @@ assign_levels(Roots, Graph, Opt, N, Placed) ->
 			  INs =
 			      del_element( %% self ref is ok.
 				V,
-				list_to_set(digraph:in_neighbours(Graph,V))),
+				from_list(digraph:in_neighbours(Graph,V))),
 			  case intersection(INs,Lev) of
 			      [] ->
 				  Lev;
@@ -151,7 +151,7 @@ assign_levels(Roots, Graph, Opt, N, Placed) ->
 		  ONs = 
 		      del_element( %% beware of self-ref.
 			V,
-			list_to_set(digraph:out_neighbours(Graph,V))),
+			from_list(digraph:out_neighbours(Graph,V))),
 		  union(ONs,Acc)
 	  end, [], ThisLevel),
     Children = subtract(Children0, Placed),
