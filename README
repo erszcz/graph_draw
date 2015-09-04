@@ -1,0 +1,77 @@
+
+GD - Graph Drawier Version 0.0
+------------------------------
+
+This is a set of modules to present graphs to a person.  THe person
+could rearange the graph and the system will keep those positions if
+the graph is changed by the program.
+
+There is a callback system for the application calling gd.  Study the
+examples, gd.hrl and gdtop.hrl.
+
+This is by no means a reliable product - it is just a toy which I
+created for one purpose long ago. If it crashes it is just behaving as
+I expect :-)
+
+Do whatever you want with this, but keep my name if you distribute
+it.  If you earns money on this, discuss with me how much you shall
+send to me!
+
+Hans Nilsson
+hans@erix.ericsson.se
+
+
+List of files
+-------------
+
+gdtst.erl
+	A small test.  Start with gdtst:start(). Click on
+	"Help"->"Some Hints" for a description on how to use the
+	graphical interface.
+
+gdtest.erl
+	A larger test. Start with gdtest:start(). Click on
+	"Help"->"Some Hints" for a description on how to use the
+	graphical interface.
+
+	Select a testcase in the menu "Tests".  Then click
+	"Edit"->"Redraw" to see it appear (or to crash :-)).
+
+	Keep an eye on the erlang shell since some error messages will
+	be written there (like if you try to draw a graph with a tree
+	algorithm).
+
+gdproc.erl
+	An other test, gdproc:start() which shows the Erlang
+	processes.  Make the window larger so you can watch all
+	processes, do for example "spawn(io,read,[])." and click
+	"Edit"->"Refresh".  You will see new processes in greenr and
+	dead processes in red.  Click "Edit"->"Refresh" once more and
+	you will see only living processes, all in blue.
+
+gdtop.erl
+gdtop.hrl
+	The main program that your application shall call.
+
+gd.erl
+gd.hrl
+	The graphical stuff like node moving, selecting nodes or arcs
+	etc
+
+gd_algs.hrl
+gd_alg_patch.erl
+gd_alg_sugiyama.erl
+gd_alg_tree.erl
+	Different drawing algorithms.  They are a sort of plugins.
+
+gd_ps.erl
+	Graph to postscript
+
+gd_lib.erl
+gd_txtwin.erl
+m.erl
+cc.erl
+	Some help routines
+
+gdtophelp.txt
+	The helptext

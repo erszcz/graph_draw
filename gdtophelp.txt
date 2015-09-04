@@ -1,0 +1,35 @@
+
+This is a program to display graphs.
+
+Buttons:
+--------
+	File:   exit: 
+		print:
+		    postscript on the file graph.ps
+	
+	Edit:	refresh:
+		    update the graph and indicate deleted and added
+		    nodes and links
+		redraw:
+		    draw the graph from the very beginning
+		rearrange manually:
+		    enable manual moving of nodes
+
+	Options:
+
+
+Manual moving of nodes:
+-----------------------
+	1) enable "Rearrange manually" in the "Edit" menu
+	   
+   	2) select one or more nodes to move by clicking on them with
+	   the left or by holding the left button down and drag a
+	   rectangle around them
+
+	3) hold the right button down and move around
+
+	4) de-select by selecting selected nodes as in step 2)
+
+Hans Nilsson
+hans@erix.ericsson.se
+
